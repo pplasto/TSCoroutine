@@ -11,6 +11,7 @@ class CoroutineNode {
 }
 
 interface IYieldWrapper {
+    discriminator: 'I-AM-IYieldWrapper';
     readonly finished: boolean;
 }
 
@@ -48,7 +49,7 @@ class CoroutineScheduler {
                 coroutine.waitForCoroutine = yieldCommand;
             }
             // IYieldWrapper
-            else if (yieldCommand && yieldCommand.finished) {
+            else if (yieldCommand && yieldCommand.discriminator === "I-AM-IYieldWrapper") {
                 coroutine.yieldObject = yieldCommand;
             }
         } else {
@@ -101,6 +102,8 @@ function* WaitForSecond(second: number) {
 
 // 牛B了
 class YieldWaitForSecond implements IYieldWrapper {
+    // 判断接口用.
+    discriminator: "I-AM-IYieldWrapper" = "I-AM-IYieldWrapper";
     get finished(): boolean {
         return Date.now() >= this.reachTime;
     }
